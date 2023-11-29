@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <body>
+
+        <ui:composition template="./template/template.xhtml">
+
+            <ui:define name="content">
+                <h:form>
+                    <p:panel header="Gestion des employes">
+                        <p:panelGrid  columns="2">
+                            <p:outputLabel value="First Name: "></p:outputLabel>
+                            <p:inputText value="#{employesBean.employes.firstName}"></p:inputText>
+                            <p:outputLabel value="Last Name: "></p:outputLabel>
+                            <p:inputText value="#{employesBean.employes.lastName}"></p:inputText>
+                            <p:outputLabel value="Service: "></p:outputLabel>
+                            <p:selectOneMenu value="#{employesBean.employes.service}" converter="#{ServiceConverter}">
+    <f:selectItems value="#{employesBean.services}" var="s" itemLabel="#{s.libelle}" itemValue="#{s}" />
+</p:selectOneMenu>
+
+                            <p:commandButton value="Envoyer" actionListener="#{employesBean.onCreateAction}" update=":employes"></p:commandButton>
+                        </p:panelGrid>
+                    </p:panel>
+                </h:form>
+                <h:form id="employes">
+                    <p:panel header="Liste des employes">
+                        <p:dataTable var="emp" value="#{employesBean.employees}">
+                            <p:column headerText="First Name">
+                                <p:outputLabel value="#{emp.firstName}" />
+                            </p:column>
+                            <p:column headerText="Last Name">
+                                <p:outputLabel value="#{emp.lastName}" />
+                            </p:column>
+                            <p:column headerText="Service">
+                                <p:outputLabel value="#{emp.service.libelle}" />
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel>
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>
