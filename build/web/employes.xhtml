@@ -13,7 +13,12 @@
         <ui:composition template="./template/template.xhtml">
 
             <ui:define name="content">
-                <h:form>
+                <h:form id="employesForm">
+              
+<p:commandButton value="Update" actionListener="#{employesBean.onUpdateAction}" update=":employes" process=":employesForm"  />
+
+<p:commandButton value="Delete" actionListener="#{employesBean.onDeleteAction}" update=":employes" />
+
                     <p:panel header="Gestion des employes">
                         <p:panelGrid columns="2">
                             <p:outputLabel value="First Name: " />
@@ -27,10 +32,14 @@
                             <p:commandButton value="Envoyer" actionListener="#{employesBean.onCreateAction}" update=":employes" />
                         </p:panelGrid>
                     </p:panel>
+
+
                 </h:form>
                 <h:form id="employes">
                     <p:panel header="Liste des employes">
-                        <p:dataTable var="emp" value="#{employesBean.employees}">
+                        <p:dataTable var="emp" value="#{employesBean.employees}" selection="#{employesBean.selectedEmployee}" rowKey="#{emp.id}" selectionMode="single">
+                              <p:ajax event="rowSelect" listener="#{employesBean.onRowSelect}" update=":employes" />
+            <p:ajax event="rowUnselect" listener="#{employesBean.onRowUnselect}" update=":employes" />
                             <p:column headerText="First Name">
                                 <p:outputLabel value="#{emp.firstName}" />
                             </p:column>

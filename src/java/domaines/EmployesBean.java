@@ -10,6 +10,7 @@ import javax.faces.bean.ViewScoped;
 import java.util.List;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import org.primefaces.event.SelectEvent;
 
 @ManagedBean
 @ViewScoped
@@ -98,14 +99,47 @@ public void onCreateAction() {
     public void onEditAction(Employes emp) {
         selectedEmployee = employesService.getById(emp.getId());
     }
+public void onRowSelect(SelectEvent event) {
+    selectedEmployee = (Employes) event.getObject();
 
-    public void onUpdateAction() {
-        employesService.update(selectedEmployee);
-        employees = null; // Reset the list to trigger a reload
-    }
+    // Populate input fields with selected employee data
+    employes.setFirstName(selectedEmployee.getFirstName());
+    employes.setLastName(selectedEmployee.getLastName());
+    employes.setService(selectedEmployee.getService());
+}
 
-    public void onDeleteAction(Employes emp) {
-        employesService.delete(emp);
-        employees = null; // Reset the list to trigger a reload
+
+ public void onUpdateAction() {
+    try {
+        if (selectedEmployee != null) {
+            // Update selected employee with modified data
+            selectedEmployee.setFirstName(employes.getFirstName());
+            selectedEmployee.setLastName(employes.getLastName());
+            selectedEmployee.setService(employes.getService());
+
+            employesService.update(selectedEmployee);
+            employees = null; // Reset the list to trigger a reload
+            selectedEmployee = null; // Clear the selected employee
+            System.out.println("Employee updated successfully!");
+        } else {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "No employee selected", "Please select an employee to update."));
+        }
+    } catch (Exception e) {
+        System.err.println("Error updating employee: " + e.getMessage());
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error updating employee", e.getMessage()));
     }
+}
+
+
+
+   public void onDeleteAction() {
+   
+        if (selectedEmployee != null) {
+            employesService.delete(selectedEmployee);
+            employees = null; 
+            selectedEmployee = null; 
+          
+        } 
+}
+
 }
