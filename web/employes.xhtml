@@ -8,6 +8,8 @@
 
     <body>
 
+<h:messages globalOnly="true" showDetail="true" showSummary="false" />
+
         <ui:composition template="./template/template.xhtml">
 
             <ui:define name="content">
@@ -19,9 +21,9 @@
                             <p:outputLabel value="Last Name: " />
                             <p:inputText value="#{employesBean.employes.lastName}" />
                             <p:outputLabel value="Service: " />
-                            <p:selectOneMenu value="#{employesBean.employes.service}" >
-                                <f:selectItems value="#{employesBean.services}" var="s" itemLabel="#{s.libelle}" itemValue="#{s}" />
-                            </p:selectOneMenu>
+                           <p:selectOneMenu value="#{employesBean.selectedServiceId}" >
+    <f:selectItems value="#{employesBean.services}" var="s" itemLabel="#{s.libelle}" itemValue="#{s.id}" />
+</p:selectOneMenu>
                             <p:commandButton value="Envoyer" actionListener="#{employesBean.onCreateAction}" update=":employes" />
                         </p:panelGrid>
                     </p:panel>

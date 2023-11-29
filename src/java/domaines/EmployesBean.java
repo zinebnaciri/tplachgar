@@ -8,6 +8,8 @@ import service.ServiceService;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import java.util.List;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 
 @ManagedBean
 @ViewScoped
@@ -19,6 +21,16 @@ public class EmployesBean {
     private List<Service> services;
     private EmployesService employesService;
     private ServiceService serviceService;
+    private String selectedServiceId;
+
+
+public String getSelectedServiceId() {
+    return selectedServiceId;
+}
+
+public void setSelectedServiceId(String selectedServiceId) {
+    this.selectedServiceId = selectedServiceId;
+}
 
     public EmployesBean() {
         employes = new Employes();
@@ -63,17 +75,25 @@ public class EmployesBean {
         this.selectedEmployee = selectedEmployee;
     }
 
-    public void onCreateAction() {
-        try {
-            employesService.create(employes);
-            employes = new Employes();
-            employees = null; // Reset the list to trigger a reload
-            System.out.println("Employee created successfully!");
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println("Error creating employee: " + e.getMessage());
-        }
+    // Update the onCreateAction method to handle potential exceptions more clearly
+public void onCreateAction() {
+    try {
+        // Set the selected service for the employee
+        Service selectedService = serviceService.getById(Integer.parseInt(selectedServiceId));
+        employes.setService(selectedService);
+
+        // Create the employee
+        employesService.create(employes);
+
+        employes = new Employes();
+        employees = null; // Reset the list to trigger a reload
+        System.out.println("Employee created successfully!");
+    } catch (Exception e) {
+        System.err.println("Error creating employee: " + e.getMessage());
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error creating employee", e.getMessage()));
     }
+}
+
 
     public void onEditAction(Employes emp) {
         selectedEmployee = employesService.getById(emp.getId());
